@@ -1,0 +1,6 @@
+.tools/
+results/*.jtl
+results/*.log
+reports/ci-*/
+reports/html-report/
+reports/smoke-report/

@@ -1,0 +1,86 @@
+name: JMeter Load (manual / schedule)
+
+on:
+  workflow_dispatch:
+    inputs:
+      threads:
+        description: Virtual users (threads)
+        required: true
+        default: "500"
+      rampup:
+        description: Ramp-up (seconds)
+        required: true
+        default: "60"
+      duration:
+        description: Test duration (seconds)
+        required: true
+        default: "300"
+      max_error_rate:
+        description: Fail job if error rate exceeds this % (demo externo e instavel)
+        required: true
+        default: "2"
+  schedule:
+    # Segunda-feira 09:00 UTC — fora do caminho critico de PR
+    - cron: "0 9 * * 1"
+
+concurrency:
+  group: jmeter-load
+  cancel-in-progress: false
+
+jobs:
+  load:
+    name: BlazeDemo full load
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Cache JMeter
+        uses: actions/cache@v4
+        with:
+          path: .tools/apache-jmeter-5.6.3
+          key: jmeter-5.6.3-linux
+
+      - name: Resolve load parameters
+        id: params
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "threads=${{ inputs.threads }}" >> "$GITHUB_OUTPUT"
+            echo "rampup=${{ inputs.rampup }}" >> "$GITHUB_OUTPUT"
+            echo "duration=${{ inputs.duration }}" >> "$GITHUB_OUTPUT"
+            echo "max_rate=${{ inputs.max_error_rate }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "threads=500" >> "$GITHUB_OUTPUT"
+            echo "rampup=60" >> "$GITHUB_OUTPUT"
+            echo "duration=300" >> "$GITHUB_OUTPUT"
+            echo "max_rate=2" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run load test
+        run: |
+          chmod +x scripts/jmeter-ci.sh
+          scripts/jmeter-ci.sh \
+            "${{ steps.params.outputs.threads }}" \
+            "${{ steps.params.outputs.rampup }}" \
+            "${{ steps.params.outputs.duration }}" \
+            "full-load" \
+            "${{ steps.params.outputs.max_rate }}"
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-load-report-${{ github.run_id }}
+          path: |
+            results/ci-full-load.jtl
+            results/ci-full-load.log
+            reports/ci-full-load/
+          retention-days: 30
