@@ -1,27 +1,54 @@
-name: JMeter Load (manual / schedule)
+name: JMeter Load (manual)
 
+# Sem agendamento. No demo publico, sem autorizacao, so validacao leve
+# (ate 10 usuarios e 60 s). Carga maior exige host controlado ou autorizacao.
 on:
   workflow_dispatch:
     inputs:
+      target_host:
+        description: Host do ambiente. Padrao 127.0.0.1 (alvo local). Demo publico exige autorizacao.
+        required: true
+        default: "127.0.0.1"
+        type: string
+      protocol:
+        description: http no alvo local; https no demo ou em outro host
+        required: true
+        default: "http"
+        type: string
+      port:
+        description: 8080 no alvo local; 443 em https
+        required: true
+        default: "8080"
+        type: string
+      authorize_public_target:
+        description: Autorizar carga completa contra o demo publico (execucao pontual)
+        type: boolean
+        default: false
       threads:
         description: Virtual users (threads)
         required: true
         default: "500"
+        type: string
       rampup:
         description: Ramp-up (seconds)
         required: true
         default: "60"
+        type: string
       duration:
         description: Test duration (seconds)
         required: true
         default: "300"
+        type: string
       max_error_rate:
-        description: Fail job if error rate exceeds this % (demo externo e instavel)
+        description: Reprova se a taxa de erro exceder este percentual
         required: true
         default: "2"
-  schedule:
-    # Segunda-feira 09:00 UTC — fora do caminho critico de PR
-    - cron: "0 9 * * 1"
+        type: string
+      max_p95_ms:
+        description: Reprova se o p95 do fluxo TX exceder este valor (ms)
+        required: true
+        default: "3000"
+        type: string
 
 concurrency:
   group: jmeter-load
@@ -29,13 +56,30 @@ concurrency:
 
 jobs:
   load:
-    name: BlazeDemo full load
+    name: Full load (ambiente autorizado)
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Check full-load target policy
+        env:
+          THREADS: ${{ inputs.threads }}
+          RAMPUP: ${{ inputs.rampup }}
+          DURATION: ${{ inputs.duration }}
+          RUN_NAME: full-load
+          MAX_ERROR_RATE: ${{ inputs.max_error_rate }}
+          MAX_P95_MS: ${{ inputs.max_p95_ms }}
+          TARGET_HOST: ${{ inputs.target_host }}
+          PROTOCOL: ${{ inputs.protocol }}
+          PORT: ${{ inputs.port }}
+          AUTHORIZE_PUBLIC_TARGET: ${{ inputs.authorize_public_target }}
+          POLICY_CHECK_ONLY: "true"
+        run: |
+          chmod +x scripts/jmeter-ci.sh
+          scripts/jmeter-ci.sh
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -49,30 +93,21 @@ jobs:
           path: .tools/apache-jmeter-5.6.3
           key: jmeter-5.6.3-linux
 
-      - name: Resolve load parameters
-        id: params
-        run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "threads=${{ inputs.threads }}" >> "$GITHUB_OUTPUT"
-            echo "rampup=${{ inputs.rampup }}" >> "$GITHUB_OUTPUT"
-            echo "duration=${{ inputs.duration }}" >> "$GITHUB_OUTPUT"
-            echo "max_rate=${{ inputs.max_error_rate }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "threads=500" >> "$GITHUB_OUTPUT"
-            echo "rampup=60" >> "$GITHUB_OUTPUT"
-            echo "duration=300" >> "$GITHUB_OUTPUT"
-            echo "max_rate=2" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Run load test
+        env:
+          THREADS: ${{ inputs.threads }}
+          RAMPUP: ${{ inputs.rampup }}
+          DURATION: ${{ inputs.duration }}
+          RUN_NAME: full-load
+          MAX_ERROR_RATE: ${{ inputs.max_error_rate }}
+          MAX_P95_MS: ${{ inputs.max_p95_ms }}
+          TARGET_HOST: ${{ inputs.target_host }}
+          PROTOCOL: ${{ inputs.protocol }}
+          PORT: ${{ inputs.port }}
+          AUTHORIZE_PUBLIC_TARGET: ${{ inputs.authorize_public_target }}
         run: |
           chmod +x scripts/jmeter-ci.sh
-          scripts/jmeter-ci.sh \
-            "${{ steps.params.outputs.threads }}" \
-            "${{ steps.params.outputs.rampup }}" \
-            "${{ steps.params.outputs.duration }}" \
-            "full-load" \
-            "${{ steps.params.outputs.max_rate }}"
+          scripts/jmeter-ci.sh
 
       - name: Upload report
         if: always()

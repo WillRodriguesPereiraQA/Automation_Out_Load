@@ -1,20 +1,20 @@
-2026-10-07 17:05:35,053 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
-2026-10-07 17:05:35,074 INFO o.a.j.JMeter: Loading user properties from: C:\Users\wfix_\AppData\Local\Programs\JMeter\bin\user.properties
-2026-10-07 17:05:35,084 INFO o.a.j.JMeter: Loading system properties from: C:\Users\wfix_\AppData\Local\Programs\JMeter\bin\system.properties
-2026-10-07 17:05:35,087 INFO o.a.j.JMeter: Copyright (c) 1998-2024 The Apache Software Foundation
-2026-10-07 17:05:35,087 INFO o.a.j.JMeter: Version 5.6.3
-2026-10-07 17:05:35,087 INFO o.a.j.JMeter: java.version=21.0.10
-2026-10-07 17:05:35,087 INFO o.a.j.JMeter: java.vm.name=OpenJDK 64-Bit Server VM
-2026-10-07 17:05:35,087 INFO o.a.j.JMeter: os.name=Windows 11
-2026-10-07 17:05:35,087 INFO o.a.j.JMeter: os.arch=amd64
-2026-10-07 17:05:35,087 INFO o.a.j.JMeter: os.version=10.0
-2026-10-07 17:05:35,087 INFO o.a.j.JMeter: file.encoding=UTF-8
-2026-10-07 17:05:35,087 INFO o.a.j.JMeter: java.awt.headless=null
-2026-10-07 17:05:35,087 INFO o.a.j.JMeter: Max memory     =1073741824
-2026-10-07 17:05:35,087 INFO o.a.j.JMeter: Available Processors =12
-2026-10-07 17:05:35,103 INFO o.a.j.JMeter: Default Locale=English (EN)
-2026-10-07 17:05:35,103 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
-2026-10-07 17:05:35,103 INFO o.a.j.JMeter: JMeterHome=C:\Users\wfix_\AppData\Local\Programs\JMeter
-2026-10-07 17:05:35,103 INFO o.a.j.JMeter: user.dir  =C:\Users\wfix_\OneDrive\Documentos\Automation\Automation_Out\Automation_Out_Load
-2026-10-07 17:05:35,103 INFO o.a.j.JMeter: PWD       =C:\Users\wfix_\OneDrive\Documentos\Automation\Automation_Out\Automation_Out_Load
-2026-10-07 17:05:35,103 INFO o.a.j.JMeter: IP: 192.168.0.56 Name: BOOK-SSNQ9R3GI1 FullName: BOOK-SSNQ9R3GI1
+2026-10-21 20:56:30,207 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2026-10-21 20:56:30,252 INFO o.a.j.JMeter: Loading user properties from: C:\Users\wfix_\AppData\Local\Programs\JMeter\bin\user.properties
+2026-10-21 20:56:30,255 INFO o.a.j.JMeter: Loading system properties from: C:\Users\wfix_\AppData\Local\Programs\JMeter\bin\system.properties
+2026-10-21 20:56:30,268 INFO o.a.j.JMeter: Copyright (c) 1998-2024 The Apache Software Foundation
+2026-10-21 20:56:30,268 INFO o.a.j.JMeter: Version 5.6.3
+2026-10-21 20:56:30,268 INFO o.a.j.JMeter: java.version=21.0.10
+2026-10-21 20:56:30,268 INFO o.a.j.JMeter: java.vm.name=OpenJDK 64-Bit Server VM
+2026-10-21 20:56:30,268 INFO o.a.j.JMeter: os.name=Windows 11
+2026-10-21 20:56:30,269 INFO o.a.j.JMeter: os.arch=amd64
+2026-10-21 20:56:30,269 INFO o.a.j.JMeter: os.version=10.0
+2026-10-21 20:56:30,269 INFO o.a.j.JMeter: file.encoding=UTF-8
+2026-10-21 20:56:30,269 INFO o.a.j.JMeter: java.awt.headless=null
+2026-10-21 20:56:30,269 INFO o.a.j.JMeter: Max memory     =1073741824
+2026-10-21 20:56:30,269 INFO o.a.j.JMeter: Available Processors =12
+2026-10-21 20:56:30,288 INFO o.a.j.JMeter: Default Locale=English (EN)
+2026-10-21 20:56:30,289 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2026-10-21 20:56:30,289 INFO o.a.j.JMeter: JMeterHome=C:\Users\wfix_\AppData\Local\Programs\JMeter
+2026-10-21 20:56:30,289 INFO o.a.j.JMeter: user.dir  =C:\Users\wfix_\OneDrive\Documentos\Automation\Automation_Out\Automation_Out_Load
+2026-10-21 20:56:30,290 INFO o.a.j.JMeter: PWD       =C:\Users\wfix_\OneDrive\Documentos\Automation\Automation_Out\Automation_Out_Load
+2026-10-21 20:56:30,292 INFO o.a.j.JMeter: IP: 192.168.0.56 Name: BOOK-SSNQ9R3GI1 FullName: BOOK-SSNQ9R3GI1

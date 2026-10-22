@@ -5,12 +5,14 @@ on:
     paths:
       - "jmeter/**"
       - "scripts/jmeter-ci.sh"
+      - "scripts/evaluate-quality-gate.py"
       - ".github/workflows/jmeter-smoke.yml"
   push:
     branches: [main, master]
     paths:
       - "jmeter/**"
       - "scripts/jmeter-ci.sh"
+      - "scripts/evaluate-quality-gate.py"
       - ".github/workflows/jmeter-smoke.yml"
 
 concurrency:
@@ -40,10 +42,18 @@ jobs:
           key: jmeter-5.6.3-linux
 
       - name: Run smoke test (5 VUs, 30s)
+        env:
+          THREADS: "5"
+          RAMPUP: "10"
+          DURATION: "30"
+          RUN_NAME: pr-smoke
+          MAX_ERROR_RATE: "0"
+          MAX_P95_MS: "3000"
+          TARGET_HOST: www.blazedemo.com
         run: |
           chmod +x scripts/jmeter-ci.sh
-          # 0% de erro exigido — valida script e disponibilidade basica do alvo
-          scripts/jmeter-ci.sh 5 10 30 pr-smoke 0
+          # Validacao leve: 0% de erro e p95 do fluxo ate 3000 ms
+          scripts/jmeter-ci.sh
 
       - name: Upload report
         if: always()

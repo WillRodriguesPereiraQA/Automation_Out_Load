@@ -26,7 +26,7 @@
 | Métrica | Uso |
 |---------|-----|
 | Throughput (req/s) | Capacidade sob carga |
-| P90 / P95 / P99 | Experiência e cauda longa |
+| P90 / P95 / P99 | Experiência e cauda longa. O p95 do TX decide o quality gate, junto com a taxa de erro |
 | Error % | HTTP, timeouts e falhas de assertion |
 | Connect Time | Rede vs saturação do servidor |
 
@@ -41,12 +41,14 @@
 .\scripts\run-load-test.ps1
 ```
 
+A carga completa sobe um servidor nesta máquina e usa **http://127.0.0.1:8080**.
+
 Dashboard: `reports/html-report/index.html`  
 JTL mais recente (última carga local): `results/blazedemo-load-20261007-170535.jtl`
 
 ### CI (GitHub Actions)
 
-Smoke em PR e carga manual/agendada — ver [GITHUB_ACTIONS.md](GITHUB_ACTIONS.md).
+Smoke em PR e carga manual em ambiente controlado ou autorizado — ver [GITHUB_ACTIONS.md](GITHUB_ACTIONS.md). O job reprova por taxa de erro **ou** por p95 do fluxo `TX - Fluxo completo reserva` acima de **3000 ms**. O p99 desse fluxo é registrado no log.
 
 ---
 
@@ -115,7 +117,7 @@ As falhas correlacionam-se com **500 threads ativas** e limites do **BlazeDemo p
 
 O plano JMeter atende ao objetivo pedido (**500 usuários simultâneos por 5 minutos**) e gera métricas acionáveis (throughput, percentis, erros por label). O BlazeDemo **suportou a carga na maioria das execuções** com error rate **&lt; 0,02%** (runs 1 e 2) e P95 TX **&lt; 1,5 s**, atendendo critérios usuais (**error &lt; 1%**, **P95 TX &lt; 3 s**). A **execução 3** mostra que o mesmo script, no mesmo cliente, pode **reprovar** critério de 1% em dias de instabilidade do demo (**~1,02%** de erro).
 
-**Resultado pedagógico:** script e relatório adequados; **SLA sobre site de terceiros** deve ser interpretado com tolerância ou substituído por ambiente controlado. O CI reflete isso: smoke estrito em PR, carga completa com limiar **2%** de erro.
+**Resultado pedagógico:** script e relatório adequados; **SLA sobre site de terceiros** deve ser interpretado com tolerância ou substituído por ambiente controlado. O CI reflete isso: smoke estrito em PR (erro **0%** e p95 do fluxo até **3000 ms**). No demo público, sem autorização, a pipeline só aceita validação leve (até 10 usuários e 60 s). A carga de 500×5 min é manual, em ambiente controlado ou com autorização explícita (erro até **2%** e o mesmo p95). A execução 3 ficaria reprovada pelo p95 (**3012 ms**) mesmo com erro de cerca de **1%**.
 
 ---
 
